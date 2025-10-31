@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options Strategy Calculators</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📈 Options Strategy Calculators</h1>
+            <p>Calculate Forward Factor and Earnings Calendar opportunities</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('forward')">
+                Forward Factor Calculator
+            </button>
+            <button class="tab-button" onclick="switchTab('earnings')">
+                Earnings Calendar Checker
+            </button>
+        </div>
+
+        <!-- Forward Factor Tab -->
+        <div id="forward-tab" class="tab-content active">
+            <div class="calculator-section">
+                <h2>Forward Volatility & Factor Calculator</h2>
+                <p class="description">
+                    Calculate forward volatility between two expiries and determine if the Forward Factor signals a trading opportunity.
+                </p>
+
+                <div class="input-group">
+                    <h3>Front Month (Near Expiry)</h3>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label for="dte1">Days to Expiry (DTE)</label>
+                            <input type="number" id="dte1" placeholder="e.g., 30" min="1">
+                        </div>
+                        <div class="input-field">
+                            <label for="iv1">Implied Volatility (%)</label>
+                            <input type="number" id="iv1" placeholder="e.g., 45" min="0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <h3>Back Month (Far Expiry)</h3>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label for="dte2">Days to Expiry (DTE)</label>
+                            <input type="number" id="dte2" placeholder="e.g., 60" min="1">
+                        </div>
+                        <div class="input-field">
+                            <label for="iv2">Implied Volatility (%)</label>
+                            <input type="number" id="iv2" placeholder="e.g., 35" min="0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateForwardFactor()">
+                    Calculate Forward Factor
+                </button>
+
+                <div id="forward-results" class="results-section" style="display: none;">
+                    <h3>Results</h3>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">Forward Volatility:</span>
+                            <span id="forward-vol" class="result-value">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Forward Factor:</span>
+                            <span id="forward-factor" class="result-value">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Signal:</span>
+                            <span id="trade-signal" class="result-value">-</span>
+                        </div>
+                    </div>
+                    <div id="recommendation" class="recommendation"></div>
+                </div>
+
+                <div class="info-box">
+                    <h4>📊 Strategy Rules:</h4>
+                    <ul>
+                        <li><strong>Entry Signal:</strong> Forward Factor > 0.20 (20%)</li>
+                        <li><strong>Position:</strong> Long calendar spread (sell front, buy back)</li>
+                        <li><strong>Size:</strong> 2-8% of portfolio (4% recommended)</li>
+                        <li><strong>Exit:</strong> Close before front expiry</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings Calendar Tab -->
+        <div id="earnings-tab" class="tab-content">
+            <div class="calculator-section">
+                <h2>Earnings Calendar Strategy Checker</h2>
+                <p class="description">
+                    Check if an earnings setup meets all criteria for the calendar call strategy.
+                </p>
+
+                <div class="input-group">
+                    <h3>Stock Information</h3>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label for="ticker">Ticker Symbol</label>
+                            <input type="text" id="ticker" placeholder="e.g., AAPL" style="text-transform: uppercase;">
+                        </div>
+                        <div class="input-field">
+                            <label for="volume">Avg Daily Volume (millions)</label>
+                            <input type="number" id="volume" placeholder="e.g., 50" min="0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <h3>Volatility Information</h3>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label for="front-iv">Front Month IV (%)</label>
+                            <input type="number" id="front-iv" placeholder="e.g., 60" min="0" step="0.1">
+                        </div>
+                        <div class="input-field">
+                            <label for="back-iv">Back Month IV (%)</label>
+                            <input type="number" id="back-iv" placeholder="e.g., 25" min="0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <h3>Expected Move Analysis</h3>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label for="expected-move">Market Expected Move (%)</label>
+                            <input type="number" id="expected-move" placeholder="e.g., 7" min="0" step="0.1">
+                        </div>
+                        <div class="input-field">
+                            <label for="historical-move">Historical Avg Move (%)</label>
+                            <input type="number" id="historical-move" placeholder="e.g., 3" min="0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <h3>Execution Quality</h3>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label for="spread-cost">Calendar Spread Cost ($)</label>
+                            <input type="number" id="spread-cost" placeholder="e.g., 3.00" min="0" step="0.01">
+                        </div>
+                        <div class="input-field">
+                            <label for="bid-ask">Bid-Ask Spread ($)</label>
+                            <input type="number" id="bid-ask" placeholder="e.g., 0.30" min="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <h3>Red Flags Check</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="is-biotech">
+                            <span>Biotech/Pharma Stock</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="is-meme">
+                            <span>Meme Stock</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="recent-gap">
+                            <span>Recent Gap >15%</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="checkEarningsSetup()">
+                    Check Setup Quality
+                </button>
+
+                <div id="earnings-results" class="results-section" style="display: none;">
+                    <h3>Setup Analysis</h3>
+                    <div id="criteria-checklist" class="checklist"></div>
+                    <div id="earnings-recommendation" class="recommendation"></div>
+                </div>
+
+                <div class="info-box">
+                    <h4>📋 Strategy Criteria:</h4>
+                    <ul>
+                        <li><strong>Volume:</strong> ≥ 1.5M shares daily</li>
+                        <li><strong>IV Ratio:</strong> Front/Back ≥ 2.5x</li>
+                        <li><strong>Expected Move:</strong> ≤ 8-10%</li>
+                        <li><strong>Overpricing:</strong> Expected ≥ 3x historical</li>
+                        <li><strong>Bid-Ask:</strong> ≤ 20% of spread cost</li>
+                        <li><strong>No red flags:</strong> Biotech, meme, or recent gaps</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

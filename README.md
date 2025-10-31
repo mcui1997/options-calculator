@@ -1,3 +1,5 @@
+https://mcui1997.github.io/options-calculator/
+
 # Options Strategy Calculators
 
 Simple web-based calculators for two profitable options strategies: the Forward Factor strategy and the Earnings Calendar strategy. Built with vanilla HTML, CSS, and JavaScript - no dependencies required.
